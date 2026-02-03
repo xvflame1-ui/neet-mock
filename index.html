@@ -1,101 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NEET Full Mock Test</title>
+  <title>NEET Mock Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      font-family: Arial;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 15px;
-    }
+    body { font-family: Arial; background:#f5f5f5; margin:0; }
     .box {
+      max-width: 600px;
+      margin: 40px auto;
       background: white;
       padding: 20px;
       border-radius: 8px;
-      max-width: 700px;
-      margin: auto;
     }
-    h1 { text-align: center; }
-    .timer {
-      text-align: center;
-      color: red;
-      font-size: 22px;
-      margin-bottom: 10px;
+    input, button {
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 16px;
     }
-    button {
-      padding: 10px 15px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-    label { display: block; margin: 6px 0; }
+    button { background: #2e7dff; color: white; border: none; }
+    .q { margin: 20px 0; }
   </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h1>NEET FULL MOCK TEST</h1>
-  <div class="timer" id="timer">03:20:00</div>
+<!-- LOGIN -->
+<div class="box" id="loginBox">
+  <h2>NEET Mock Login</h2>
+  <input id="name" placeholder="Your name">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="login()">Start Test</button>
+  <p id="err" style="color:red;"></p>
+</div>
 
-  <div id="question"></div>
+<!-- TEST -->
+<div class="box" id="testBox" style="display:none;">
+  <h2 id="welcome"></h2>
 
-  <button onclick="next()">Save & Next</button>
+  <div class="q">
+    <b>Q1.</b> SI unit of force?
+    <br>
+    <input type="radio" name="q1"> Dyne<br>
+    <input type="radio" name="q1"> Newton<br>
+    <input type="radio" name="q1"> Joule<br>
+    <input type="radio" name="q1"> Watt
+  </div>
+
+  <button onclick="submitTest()">Submit</button>
 </div>
 
 <script>
-  let time = 3*60*60 + 20*60;
-  let qIndex = 0;
-  let score = 0;
+const PASSWORD = "neet2026";
 
-  const questions = [
-    {
-      q: "Site of photosynthesis is?",
-      options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"],
-      ans: 1
-    },
-    {
-      q: "SI unit of electric field?",
-      options: ["N/C", "J/C", "C/N", "V"],
-      ans: 0
-    }
-  ];
+function login() {
+  const n = document.getElementById("name").value.trim();
+  const p = document.getElementById("pass").value;
 
-  function loadQ() {
-    let q = questions[qIndex];
-    let html = `<h3>${q.q}</h3>`;
-    q.options.forEach((o,i)=>{
-      html += `<label><input type="radio" name="opt" value="${i}"> ${o}</label>`;
-    });
-    document.getElementById("question").innerHTML = html;
+  if (!n || !p) {
+    err.innerText = "Fill all fields";
+    return;
+  }
+  if (p !== PASSWORD) {
+    err.innerText = "Wrong password";
+    return;
   }
 
-  function next() {
-    let selected = document.querySelector('input[name="opt"]:checked');
-    if (selected && Number(selected.value) === questions[qIndex].ans) {
-      score += 4;
-    } else if (selected) {
-      score -= 1;
-    }
+  localStorage.setItem("neetUser", n);
+  loginBox.style.display = "none";
+  testBox.style.display = "block";
+  welcome.innerText = "Welcome, " + n;
+}
 
-    qIndex++;
-    if (qIndex < questions.length) loadQ();
-    else alert("Test finished! Score: " + score);
-  }
-
-  setInterval(()=>{
-    time--;
-    let h = Math.floor(time/3600);
-    let m = Math.floor((time%3600)/60);
-    let s = time%60;
-    document.getElementById("timer").innerText =
-      `${h}:${m}:${s}`;
-  },1000);
-
-  loadQ();
+function submitTest() {
+  alert("Test submitted (demo)");
+}
 </script>
 
 </body>
