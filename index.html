@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NEET Full Mock Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 15px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 { text-align: center; }
+    .timer {
+      text-align: center;
+      color: red;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    label { display: block; margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>NEET FULL MOCK TEST</h1>
+  <div class="timer" id="timer">03:20:00</div>
+
+  <div id="question"></div>
+
+  <button onclick="next()">Save & Next</button>
+</div>
+
+<script>
+  let time = 3*60*60 + 20*60;
+  let qIndex = 0;
+  let score = 0;
+
+  const questions = [
+    {
+      q: "Site of photosynthesis is?",
+      options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"],
+      ans: 1
+    },
+    {
+      q: "SI unit of electric field?",
+      options: ["N/C", "J/C", "C/N", "V"],
+      ans: 0
+    }
+  ];
+
+  function loadQ() {
+    let q = questions[qIndex];
+    let html = `<h3>${q.q}</h3>`;
+    q.options.forEach((o,i)=>{
+      html += `<label><input type="radio" name="opt" value="${i}"> ${o}</label>`;
+    });
+    document.getElementById("question").innerHTML = html;
+  }
+
+  function next() {
+    let selected = document.querySelector('input[name="opt"]:checked');
+    if (selected && Number(selected.value) === questions[qIndex].ans) {
+      score += 4;
+    } else if (selected) {
+      score -= 1;
+    }
+
+    qIndex++;
+    if (qIndex < questions.length) loadQ();
+    else alert("Test finished! Score: " + score);
+  }
+
+  setInterval(()=>{
+    time--;
+    let h = Math.floor(time/3600);
+    let m = Math.floor((time%3600)/60);
+    let s = time%60;
+    document.getElementById("timer").innerText =
+      `${h}:${m}:${s}`;
+  },1000);
+
+  loadQ();
+</script>
+
+</body>
+</html>
