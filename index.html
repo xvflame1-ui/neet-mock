@@ -1,25 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>NEET Mock Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>NEET MOCK TEST – LOGIN REQUIRED</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; background:#f5f5f5; margin:0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
     .box {
-      max-width: 600px;
-      margin: 40px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
+      max-width: 400px;
+      margin: 80px auto;
+      background: #020617;
+      padding: 25px;
+      border-radius: 10px;
+      text-align: center;
     }
     input, button {
-      padding: 10px;
-      width: 100%;
+      width: 90%;
+      padding: 12px;
       margin: 10px 0;
       font-size: 16px;
     }
-    button { background: #2e7dff; color: white; border: none; }
-    .q { margin: 20px 0; }
+    button {
+      background: #22c55e;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .test {
+      display: none;
+      padding: 20px;
+    }
   </style>
 </head>
 
@@ -28,53 +44,53 @@
 <!-- LOGIN -->
 <div class="box" id="loginBox">
   <h2>NEET Mock Login</h2>
-  <input id="name" placeholder="Your name">
+  <input id="user" placeholder="Username">
   <input id="pass" type="password" placeholder="Password">
-  <button onclick="login()">Start Test</button>
-  <p id="err" style="color:red;"></p>
+  <button onclick="login()">Login</button>
+  <p id="error" style="color:red;"></p>
 </div>
 
 <!-- TEST -->
-<div class="box" id="testBox" style="display:none;">
-  <h2 id="welcome"></h2>
+<div class="test" id="testBox">
+  <h1>NEET FULL MOCK TEST</h1>
+  <p>Welcome. Test unlocked.</p>
 
-  <div class="q">
-    <b>Q1.</b> SI unit of force?
-    <br>
-    <input type="radio" name="q1"> Dyne<br>
-    <input type="radio" name="q1"> Newton<br>
-    <input type="radio" name="q1"> Joule<br>
-    <input type="radio" name="q1"> Watt
-  </div>
-
-  <button onclick="submitTest()">Submit</button>
+  <h3>Q1. Human heart has how many chambers?</h3>
+  <label><input type="radio" name="q1"> 2</label><br>
+  <label><input type="radio" name="q1"> 3</label><br>
+  <label><input type="radio" name="q1"> 4</label><br>
+  <label><input type="radio" name="q1"> 5</label><br>
 </div>
 
 <script>
-const PASSWORD = "neet2026";
+  const FIXED_PASSWORD = "neet2026";
 
-function login() {
-  const n = document.getElementById("name").value.trim();
-  const p = document.getElementById("pass").value;
+  function login() {
+    const u = document.getElementById("user").value.trim();
+    const p = document.getElementById("pass").value;
 
-  if (!n || !p) {
-    err.innerText = "Fill all fields";
-    return;
+    if (!u || !p) {
+      document.getElementById("error").innerText = "Fill all fields";
+      return;
+    }
+
+    if (p !== FIXED_PASSWORD) {
+      document.getElementById("error").innerText = "Wrong password";
+      return;
+    }
+
+    localStorage.setItem("neetUser", u);
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("testBox").style.display = "block";
   }
-  if (p !== PASSWORD) {
-    err.innerText = "Wrong password";
-    return;
-  }
 
-  localStorage.setItem("neetUser", n);
-  loginBox.style.display = "none";
-  testBox.style.display = "block";
-  welcome.innerText = "Welcome, " + n;
-}
-
-function submitTest() {
-  alert("Test submitted (demo)");
-}
+  window.onload = () => {
+    const u = localStorage.getItem("neetUser");
+    if (u) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("testBox").style.display = "block";
+    }
+  };
 </script>
 
 </body>
