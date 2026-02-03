@@ -1,110 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NEET Mock Test – Register & Login</title>
+  <title>NEET Mock Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial;
-      background: #0f172a;
-      color: #fff;
+      background: #f4f6f8;
       margin: 0;
+      padding: 10px;
     }
     .box {
-      max-width: 420px;
-      margin: 80px auto;
-      background: #020617;
-      padding: 25px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    input, button {
-      width: 90%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 16px;
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 6px;
     }
     button {
-      background: #22c55e;
+      padding: 10px 15px;
+      margin-top: 15px;
+      font-size: 16px;
+      background: #2563eb;
+      color: white;
       border: none;
-      font-weight: bold;
-      cursor: pointer;
+      border-radius: 4px;
     }
-    .hidden { display: none; }
+    .option {
+      margin: 8px 0;
+    }
   </style>
 </head>
 
 <body>
 
-<!-- REGISTER -->
-<div class="box" id="registerBox">
-  <h2>Register</h2>
-  <input id="regName" placeholder="Your name">
-  <input id="regPass" type="password" placeholder="Create password">
-  <button onclick="register()">Register</button>
-  <p id="regErr" style="color:red;"></p>
+<div class="box" id="loginBox">
+  <h2>Register / Login</h2>
+  <input id="name" placeholder="Your name"><br><br>
+  <button onclick="startTest()">Start Test</button>
 </div>
 
-<!-- LOGIN -->
-<div class="box hidden" id="loginBox">
-  <h2>Login</h2>
-  <input id="loginName" placeholder="Your name">
-  <input id="loginPass" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <p id="loginErr" style="color:red;"></p>
+<div class="box" id="testBox" style="display:none;">
+  <h2 id="qno"></h2>
+  <p id="question"></p>
+
+  <div id="options"></div>
+
+  <button onclick="nextQuestion()">Save & Next</button>
 </div>
 
-<!-- TEST -->
-<div class="hidden" id="testBox" style="padding:20px;">
-  <h1>NEET FULL MOCK TEST</h1>
-  <p id="welcome"></p>
-
-  <h3>Q1. SI unit of force?</h3>
-  <label><input type="radio" name="q1"> Dyne</label><br>
-  <label><input type="radio" name="q1"> Newton</label><br>
-  <label><input type="radio" name="q1"> Joule</label><br>
-  <label><input type="radio" name="q1"> Watt</label><br>
+<div class="box" id="resultBox" style="display:none;">
+  <h2>Test Submitted</h2>
+  <p id="scoreText"></p>
 </div>
 
 <script>
-  function register() {
-    const name = regName.value.trim();
-    const pass = regPass.value;
+  const questions = [
+    {
+      q: "SI unit of force is:",
+      options: ["Dyne", "Newton", "Joule", "Watt"],
+      ans: 1
+    },
+    {
+      q: "Human heart has how many chambers?",
+      options: ["2", "3", "4", "5"],
+      ans: 2
+    },
+    {
+      q: "Site of photosynthesis is:",
+      options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"],
+      ans: 1
+    }
+  ];
 
-    if (!name || !pass) {
-      regErr.innerText = "All fields required";
+  let current = 0;
+  let answers = [];
+
+  function startTest() {
+    const n = document.getElementById("name").value.trim();
+    if (!n) {
+      alert("Enter your name");
       return;
     }
-
-    localStorage.setItem("neet_name", name);
-    localStorage.setItem("neet_pass", pass);
-
-    registerBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("testBox").style.display = "block";
+    loadQuestion();
   }
 
-  function login() {
-    const name = loginName.value.trim();
-    const pass = loginPass.value;
+  function loadQuestion() {
+    const q = questions[current];
+    document.getElementById("qno").innerText = 
+      `Question ${current + 1} of ${questions.length}`;
+    document.getElementById("question").innerText = q.q;
 
-    if (
-      name === localStorage.getItem("neet_name") &&
-      pass === localStorage.getItem("neet_pass")
-    ) {
-      loginBox.classList.add("hidden");
-      testBox.classList.remove("hidden");
-      welcome.innerText = "Welcome, " + name;
+    let html = "";
+    q.options.forEach((opt, i) => {
+      html += `
+        <div class="option">
+          <label>
+            <input type="radio" name="opt" value="${i}">
+            ${opt}
+          </label>
+        </div>`;
+    });
+    document.getElementById("options").innerHTML = html;
+  }
+
+  function nextQuestion() {
+    const selected = document.querySelector('input[name="opt"]:checked');
+    answers[current] = selected ? Number(selected.value) : null;
+
+    current++;
+    if (current < questions.length) {
+      loadQuestion();
     } else {
-      loginErr.innerText = "Invalid login details";
+      submitTest();
     }
   }
 
-  window.onload = () => {
-    if (localStorage.getItem("neet_name")) {
-      registerBox.classList.add("hidden");
-      loginBox.classList.remove("hidden");
+  function submitTest() {
+    let score = 0;
+    for (let i = 0; i < questions.length; i++) {
+      if (answers[i] === null) continue;
+      if (answers[i] === questions[i].ans) score += 4;
+      else score -= 1;
     }
-  };
+
+    document.getElementById("testBox").style.display = "none";
+    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("scoreText").innerText =
+      `Your Score: ${score} / ${questions.length * 4}`;
+  }
 </script>
 
 </body>
