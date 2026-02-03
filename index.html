@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>NEET MOCK TEST – LOGIN REQUIRED</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEET Mock Test – Register & Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background: #0f172a;
       color: #fff;
       margin: 0;
-      padding: 0;
     }
     .box {
-      max-width: 400px;
+      max-width: 420px;
       margin: 80px auto;
       background: #020617;
       padding: 25px;
@@ -29,66 +27,82 @@
     button {
       background: #22c55e;
       border: none;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
-    .test {
-      display: none;
-      padding: 20px;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 
 <body>
 
+<!-- REGISTER -->
+<div class="box" id="registerBox">
+  <h2>Register</h2>
+  <input id="regName" placeholder="Your name">
+  <input id="regPass" type="password" placeholder="Create password">
+  <button onclick="register()">Register</button>
+  <p id="regErr" style="color:red;"></p>
+</div>
+
 <!-- LOGIN -->
-<div class="box" id="loginBox">
-  <h2>NEET Mock Login</h2>
-  <input id="user" placeholder="Username">
-  <input id="pass" type="password" placeholder="Password">
+<div class="box hidden" id="loginBox">
+  <h2>Login</h2>
+  <input id="loginName" placeholder="Your name">
+  <input id="loginPass" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
-  <p id="error" style="color:red;"></p>
+  <p id="loginErr" style="color:red;"></p>
 </div>
 
 <!-- TEST -->
-<div class="test" id="testBox">
+<div class="hidden" id="testBox" style="padding:20px;">
   <h1>NEET FULL MOCK TEST</h1>
-  <p>Welcome. Test unlocked.</p>
+  <p id="welcome"></p>
 
-  <h3>Q1. Human heart has how many chambers?</h3>
-  <label><input type="radio" name="q1"> 2</label><br>
-  <label><input type="radio" name="q1"> 3</label><br>
-  <label><input type="radio" name="q1"> 4</label><br>
-  <label><input type="radio" name="q1"> 5</label><br>
+  <h3>Q1. SI unit of force?</h3>
+  <label><input type="radio" name="q1"> Dyne</label><br>
+  <label><input type="radio" name="q1"> Newton</label><br>
+  <label><input type="radio" name="q1"> Joule</label><br>
+  <label><input type="radio" name="q1"> Watt</label><br>
 </div>
 
 <script>
-  const FIXED_PASSWORD = "neet2026";
+  function register() {
+    const name = regName.value.trim();
+    const pass = regPass.value;
+
+    if (!name || !pass) {
+      regErr.innerText = "All fields required";
+      return;
+    }
+
+    localStorage.setItem("neet_name", name);
+    localStorage.setItem("neet_pass", pass);
+
+    registerBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+  }
 
   function login() {
-    const u = document.getElementById("user").value.trim();
-    const p = document.getElementById("pass").value;
+    const name = loginName.value.trim();
+    const pass = loginPass.value;
 
-    if (!u || !p) {
-      document.getElementById("error").innerText = "Fill all fields";
-      return;
+    if (
+      name === localStorage.getItem("neet_name") &&
+      pass === localStorage.getItem("neet_pass")
+    ) {
+      loginBox.classList.add("hidden");
+      testBox.classList.remove("hidden");
+      welcome.innerText = "Welcome, " + name;
+    } else {
+      loginErr.innerText = "Invalid login details";
     }
-
-    if (p !== FIXED_PASSWORD) {
-      document.getElementById("error").innerText = "Wrong password";
-      return;
-    }
-
-    localStorage.setItem("neetUser", u);
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("testBox").style.display = "block";
   }
 
   window.onload = () => {
-    const u = localStorage.getItem("neetUser");
-    if (u) {
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("testBox").style.display = "block";
+    if (localStorage.getItem("neet_name")) {
+      registerBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
     }
   };
 </script>
